@@ -130,4 +130,134 @@ img {
 <!-- PAGE 1 -->
 <div id="page1" class="page active">
   <div class="box">
-    <p>hi, ka
+    <p>hi, kavian!</p>
+    <p>i made this for you!</p>
+    <p>play this game to unlock your surprise!</p>
+    <button onclick="goToPage(2)">start game</button>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page">
+  <div class="box">
+    <p>tap two cards to find the matching pairs!</p>
+    <div class="grid" id="gameBoard"></div>
+    <p id="winText" style="display:none;">yeay you found all the pairs!</p>
+    <button id="nextBtn2" style="display:none;" onclick="goToPage(3)">next page</button>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div id="page3" class="page">
+  <div class="box">
+    <p>Reasons Why I Love You</p>
+    <p>Tap each heart to reveal one reason</p>
+
+    <button class="reason-btn" onclick="reveal(this,'you always make me laugh')">☆ your humor</button>
+    <button class="reason-btn" onclick="reveal(this,'the way you love to all your friends, especially me')">☆ your heart</button>
+    <button class="reason-btn" onclick="reveal(this,'ganteng dan sexy')">☆ your looks</button>
+
+    <button id="nextBtn3" style="display:none;" onclick="goToPage(4)">NEXT PAGE</button>
+  </div>
+</div>
+
+<!-- PAGE 4 -->
+<div id="page4" class="page">
+  <div class="box">
+    <img src="foto1.jpg">
+    <p id="typeText"></p>
+  </div>
+</div>
+
+<script>
+const clickSound = document.getElementById("clickSound");
+
+function goToPage(n){
+  clickSound.play();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById("page"+n).classList.add('active');
+  if(n===4) startTyping();
+}
+
+/* HEART */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerText="💗";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(3+Math.random()*2)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),5000);
+},500);
+
+/* MEMORY */
+const symbols=["❤️","❤️","🌸","🌸","💌","💌","🍓","🍓","🌷","🌷","🎀","🎀"];
+symbols.sort(()=>0.5-Math.random());
+let first=null,lock=false,match=0;
+const board=document.getElementById("gameBoard");
+
+symbols.forEach(sym=>{
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`<div class="card-inner"><div class="front">?</div><div class="back">${sym}</div></div>`;
+  card.onclick=()=>flip(card);
+  board.appendChild(card);
+});
+
+function flip(card){
+  if(lock||card.classList.contains("flipped")) return;
+  clickSound.play();
+  card.classList.add("flipped");
+  if(!first){ first=card; }
+  else{
+    lock=true;
+    let a=first.querySelector(".back").innerText;
+    let b=card.querySelector(".back").innerText;
+    if(a===b){
+      match++; first=null; lock=false;
+      if(match===6){
+        winText.style.display="block";
+        nextBtn2.style.display="block";
+      }
+    } else{
+      setTimeout(()=>{
+        card.classList.remove("flipped");
+        first.classList.remove("flipped");
+        first=null; lock=false;
+      },800);
+    }
+  }
+}
+
+/* PAGE 3 */
+let revealed=0;
+function reveal(btn,text){
+  clickSound.play();
+  if(btn.dataset.done) return;
+  btn.innerText="❤ "+text;
+  btn.dataset.done=true;
+  revealed++;
+  if(revealed===3) nextBtn3.style.display="block";
+}
+
+/* TYPE EFFECT */
+const message=`Valentine’s Day is all about love, so let’s keep spreading it everywhere! 
+This is Arey speaking and I just want to appreciate you, because you’re the kind of person who brings smiles and warmth to everyone around you. 
+Thank you for being here! I hope this message makes you feel how much people around you love you and miss you. 
+However, Happy Valentine's, Kavian! 👋`;
+
+let i=0;
+function startTyping(){
+  const el=document.getElementById("typeText");
+  el.innerText="";
+  i=0;
+  const timer=setInterval(()=>{
+    el.innerText+=message.charAt(i);
+    i++;
+    if(i>=message.length) clearInterval(timer);
+  },40);
+}
+</script>
+
+</body>
+</html>
