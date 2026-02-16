@@ -2,243 +2,274 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
 <style>
-*{
-  box-sizing:border-box;
-  font-family:'Poppins',sans-serif;
-  font-weight:700;
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  background: radial-gradient(circle at top, #DFF0C8, #BCD9A2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
 }
 
-body{
-  margin:0;
-  min-height:100vh;
-  background:#BCD9A2;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
+/* HEART FALL */
+.heart {
+  position: fixed;
+  top: -10px;
+  font-size: 20px;
+  animation: fall linear forwards;
+  pointer-events: none;
+}
+@keyframes fall {
+  to { transform: translateY(110vh); opacity: 0; }
 }
 
-.page{
-  display:none;
-  width:100%;
-  max-width:400px;
-  padding:20px;
+/* PAGE */
+.page {
+  display: none;
+  animation: fadeIn 0.6s ease;
+}
+.active { display: block; }
+
+@keyframes fadeIn {
+  from {opacity:0; transform: scale(0.9);}
+  to {opacity:1; transform: scale(1);}
 }
 
-.page.active{display:block;}
-
-.box{
-  background:#FFD8DF;
-  border:3px solid #FF9FB5;
-  border-radius:20px;
-  padding:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
-  text-align:center;
+/* BOX */
+.box {
+  background: linear-gradient(#FFE4EA, #FFD0DB);
+  border: 3px solid #FFA3B8;
+  padding: 24px;
+  border-radius: 25px;
+  text-align: center;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+  width: 90vw;
+  max-width: 380px;
 }
 
-button{
-  margin-top:15px;
-  padding:12px 25px;
-  border:none;
-  border-radius:30px;
-  background:white;
-  color:#FFAAB8;
-  font-size:16px;
-  box-shadow:0 5px 10px rgba(0,0,0,0.3);
-  cursor:pointer;
-  transition:0.2s;
+/* BUTTON */
+button {
+  margin-top: 15px;
+  padding: 14px 22px;
+  border-radius: 25px;
+  border: none;
+  background: linear-gradient(#ffffff, #ffeef2);
+  color: #FF7FA1;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: inset 0 2px 0 #fff, 0 6px 12px rgba(0,0,0,0.2);
+  transition: transform .15s;
 }
-button:active{transform:scale(0.95);}
+button:active { transform: scale(0.95); }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-top:15px;
+/* MEMORY */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 15px;
+}
+.card {
+  width: 100%;
+  aspect-ratio: 1/1;
+  perspective: 600px;
+}
+.card-inner {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  transform-style: preserve-3d;
+  transition: transform .5s;
+}
+.card.flipped .card-inner { transform: rotateY(180deg); }
+
+.front, .back {
+  position: absolute;
+  backface-visibility: hidden;
+}
+.back { transform: rotateY(180deg); }
+
+/* PAGE 3 BUTTON */
+.reason-btn {
+  width: 100%;
 }
 
-.card{
-  background:white;
-  border-radius:15px;
-  height:70px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  cursor:pointer;
-  box-shadow:0 4px 8px rgba(0,0,0,0.2);
+/* IMAGE */
+img {
+  width: 100%;
+  border-radius: 15px;
+  margin-bottom: 12px;
 }
 
-.hidden{color:transparent;}
-
-.reason{
-  background:white;
-  border-radius:15px;
-  padding:15px;
-  margin:10px 0;
-  box-shadow:0 5px 10px rgba(0,0,0,0.2);
-  cursor:pointer;
+/* PAGE 4 TEXT */
+.title-text{
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
-.reason span{display:none;}
-
-img{
-  width:100%;
-  border-radius:15px;
-  margin-bottom:10px;
-}
-
-/* hearts */
-.heart{
-  position:fixed;
-  top:-20px;
-  animation:fall linear forwards;
-  pointer-events:none;
-}
-@keyframes fall{
-  to{transform:translateY(110vh);opacity:0;}
+#typeText{
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 </style>
 </head>
-
 <body>
 
-<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+<audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_47b8e8e0b4.mp3"></audio>
 
 <!-- PAGE 1 -->
-<div class="page active" id="page1">
+<div id="page1" class="page active">
   <div class="box">
-    <h2>HI, KAVIAN!</h2>
-    <p>I made this for you (spesyol)!</p>
+    <p>HI, KAVIAN!</p>
+    <p>I made this (spesyol) for you!</p>
     <p>Play this game to unlock your surprise!</p>
-    <button onclick="nextPage(2)">START GAME</button>
+    <button onclick="goToPage(2)">START GAME</button>
   </div>
 </div>
 
 <!-- PAGE 2 -->
-<div class="page" id="page2">
+<div id="page2" class="page">
   <div class="box">
-    <h3>Tap two cards to find the matching pairs!</h3>
-    <div class="grid" id="game"></div>
-    <p id="winText"></p>
-    <button id="nextBtn2" style="display:none" onclick="nextPage(3)">NEXT PAGE</button>
+    <p>Tap two cards to find the matching pairs!</p>
+    <div class="grid" id="gameBoard"></div>
+    <p id="winText" style="display:none;">yeay you found all the pairs!</p>
+    <button id="nextBtn2" style="display:none;" onclick="goToPage(3)">next page</button>
   </div>
 </div>
 
 <!-- PAGE 3 -->
-<div class="page" id="page3">
+<div id="page3" class="page">
   <div class="box">
-    <h3>Reasons Why I Love You</h3>
+    <p>Reasons Why I Love You</p>
     <p>Tap each heart to reveal one reason</p>
 
-    <div class="reason" onclick="reveal(this)">☆ Your Humor<br><span>You always make me laugh</span></div>
-    <div class="reason" onclick="reveal(this)">☆ Your Heart<br><span>The way you love to all your friends, especially me</span></div>
-    <div class="reason" onclick="reveal(this)">☆ Your Looks<br><span>Ganteng dan Sexy</span></div>
+    <button class="reason-btn" onclick="reveal(this,'you always make me laugh')">☆ your humor</button>
+    <button class="reason-btn" onclick="reveal(this,'the way you love to all your friends, especially me')">☆ your heart</button>
+    <button class="reason-btn" onclick="reveal(this,'ganteng dan sexy')">☆ your looks</button>
 
-    <button id="nextBtn3" style="display:none" onclick="nextPage(4)">NEXT PAGE</button>
+    <button id="nextBtn3" style="display:none;" onclick="goToPage(4)">NEXT PAGE</button>
   </div>
 </div>
 
 <!-- PAGE 4 -->
-<div class="page" id="page4">
+<div id="page4" class="page">
   <div class="box">
-    <img src="kimminju.jpeg">
-    <h3>From Arey</h3>
-    <p id="typing"></p>
+    <img src="kimminju.jpg">
+    <div class="title-text">From Arey</div>
+    <div id="typeText"></div>
   </div>
 </div>
 
 <script>
-const sound=document.getElementById("clickSound");
-function playClick(){sound.play();}
+const clickSound = document.getElementById("clickSound");
 
-function nextPage(n){
-  playClick();
+function goToPage(n){
+  clickSound.play();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page'+n).classList.add('active');
+  document.getElementById("page"+n).classList.add('active');
+  if(n===4) startTyping();
 }
 
+/* HEART */
 setInterval(()=>{
   const h=document.createElement("div");
   h.className="heart";
   h.innerText="💗";
   h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=10+Math.random()*20+"px";
-  h.style.animationDuration=3+Math.random()*3+"s";
+  h.style.animationDuration=(3+Math.random()*2)+"s";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),5000);
-},400);
+},500);
 
-/* MEMORY GAME */
-const symbols=["💖","💖","🌸","🌸","⭐","⭐","🎀","🎀","💌","💌","🍓","🍓"];
-symbols.sort(()=>Math.random()-0.5);
+/* MEMORY */
+const symbols=["❤️","❤️","🌸","🌸","💌","💌","🍓","🍓","🌷","🌷","🎀","🎀"];
+symbols.sort(()=>0.5-Math.random());
 let first=null,lock=false,match=0;
-const game=document.getElementById("game");
+const board=document.getElementById("gameBoard");
 
 symbols.forEach(sym=>{
-  const c=document.createElement("div");
-  c.className="card hidden";
-  c.textContent=sym;
-  c.onclick=()=>{
-    playClick();
-    if(lock||!c.classList.contains("hidden"))return;
-    c.classList.remove("hidden");
-    if(!first){first=c;}
-    else{
-      if(first.textContent===c.textContent){
-        match++;
-        first=null;
-        if(match===6){
-          document.getElementById("winText").innerText="Yeay! you found all the pairs!";
-          document.getElementById("nextBtn2").style.display="block";
-        }
-      }else{
-        lock=true;
-        setTimeout(()=>{
-          first.classList.add("hidden");
-          c.classList.add("hidden");
-          first=null;
-          lock=false;
-        },800);
-      }
-    }
-  };
-  game.appendChild(c);
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`<div class="card-inner"><div class="front">?</div><div class="back">${sym}</div></div>`;
+  card.onclick=()=>flip(card);
+  board.appendChild(card);
 });
 
-/* REASONS */
-let revealed=0;
-function reveal(el){
-  playClick();
-  el.querySelector("span").style.display="block";
-  el.onclick=null;
-  revealed++;
-  if(revealed===3){
-    document.getElementById("nextBtn3").style.display="block";
+function flip(card){
+  if(lock||card.classList.contains("flipped")) return;
+  clickSound.play();
+  card.classList.add("flipped");
+  if(!first){ first=card; }
+  else{
+    lock=true;
+    let a=first.querySelector(".back").innerText;
+    let b=card.querySelector(".back").innerText;
+    if(a===b){
+      match++; first=null; lock=false;
+      if(match===6){
+        winText.style.display="block";
+        nextBtn2.style.display="block";
+      }
+    } else{
+      setTimeout(()=>{
+        card.classList.remove("flipped");
+        first.classList.remove("flipped");
+        first=null; lock=false;
+      },800);
+    }
   }
 }
 
-/* TYPING */
-const text=`Valentine’s Day is all about love, so let’s keep spreading it everywhere! 
-This is Arey speaking and I just want to appreciate you, because you’re the kind of person who brings smiles and warmth to everyone around you. 
-Thank you for being here! I hope this message makes you feel how much people around you love you and miss you. 
-However, Happy Valentine's, Kavian! 👋`;
+/* PAGE 3 */
+let revealed=0;
+function reveal(btn,text){
+  clickSound.play();
+  if(btn.dataset.done) return;
+  btn.innerText="❤ "+text;
+  btn.dataset.done=true;
+  revealed++;
+  if(revealed===3) nextBtn3.style.display="block";
+}
+
+/* TYPE EFFECT */
+const message =
+"Valentine’s Day is all about love, so let’s keep spreading it everywhere!\n\n" +
+"This is Arey speaking and I just want to appreciate you, because you’re the kind of person who brings smiles and warmth to everyone around you.\n\n" +
+"Thank you for being here! I hope this message makes you feel how much people around you love you and miss you.\n\n" +
+"However, Happy Valentine's, Kavian! 👋";
 
 let i=0;
-function type(){
-  if(i<text.length){
-    document.getElementById("typing").innerHTML+=text.charAt(i);
+function startTyping(){
+  const el=document.getElementById("typeText");
+  el.innerText="";
+  i=0;
+  const timer=setInterval(()=>{
+    el.innerText+=message.charAt(i);
     i++;
-    setTimeout(type,30);
-  }
+    if(i>=message.length) clearInterval(timer);
+  },35);
 }
-document.getElementById("page4").addEventListener("click",type,{once:true});
 </script>
 
 </body>
