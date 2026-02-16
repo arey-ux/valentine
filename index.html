@@ -2,18 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Valentine Game</title>
+<title>Valentine</title>
+
+<!-- FONT POPPINS -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #BCD9A2;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(#BCD9A2, #E6F2D9);
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  overflow: hidden;
 }
 
+/* HEART FALL */
+.heart {
+  position: fixed;
+  top: -10px;
+  font-size: 20px;
+  animation: fall linear forwards;
+  pointer-events: none;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
+
+/* PAGE */
 .page {
   display: none;
   animation: fadeIn 0.8s ease;
@@ -28,14 +50,16 @@ body {
   to {opacity:1; transform: scale(1);}
 }
 
+/* BOX */
 .box {
   background-color: #FFD8DF;
   padding: 30px;
   border-radius: 25px;
   text-align: center;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
+/* BUTTON */
 button {
   margin-top: 20px;
   padding: 14px 30px;
@@ -57,6 +81,7 @@ button:active {
   transform: scale(0.95);
 }
 
+/* MEMORY GAME */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 70px);
@@ -68,36 +93,44 @@ button:active {
 .card {
   width: 70px;
   height: 70px;
-  background-color: #FFD8DF;
+  perspective: 600px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
   border-radius: 15px;
-  font-size: 28px;
+  background: white;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 26px;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
 }
 
-.card:active {
-  transform: scale(0.9);
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
 }
 
-.hidden {
-  color: transparent;
+.front, .back {
+  position: absolute;
+  backface-visibility: hidden;
 }
 
-.heart-buttons button {
-  display: block;
-  margin: 10px auto;
+.back {
+  transform: rotateY(180deg);
 }
 
+/* REASONS */
 .reason {
   font-style: italic;
-  margin-bottom: 10px;
 }
 
+/* IMAGE */
 img {
-  width: 120px;
+  width: 130px;
   border-radius: 15px;
   margin: 10px;
   animation: pop 0.5s ease;
@@ -110,6 +143,8 @@ img {
 </style>
 </head>
 <body>
+
+<audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_47b8e8e0b4.mp3"></audio>
 
 <!-- PAGE 1 -->
 <div id="page1" class="page active">
@@ -136,14 +171,16 @@ img {
   <div class="box">
     <h2>Reasons Why I Love You</h2>
     <p>Tap each heart to reveal one reason</p>
-    <div class="heart-buttons">
-      <button onclick="reveal(1)">your humor</button>
-      <p id="r1" class="reason"></p>
-      <button onclick="reveal(2)">your heart</button>
-      <p id="r2" class="reason"></p>
-      <button onclick="reveal(3)">your looks</button>
-      <p id="r3" class="reason"></p>
-    </div>
+
+    <button onclick="reveal(1)">your humor</button>
+    <p id="r1" class="reason"></p>
+
+    <button onclick="reveal(2)">your heart</button>
+    <p id="r2" class="reason"></p>
+
+    <button onclick="reveal(3)">your looks</button>
+    <p id="r3" class="reason"></p>
+
     <button id="nextBtn3" style="display:none;" onclick="goToPage(4)">NEXT PAGE</button>
   </div>
 </div>
@@ -158,10 +195,24 @@ img {
 </div>
 
 <script>
+const clickSound = document.getElementById("clickSound");
+
 function goToPage(n) {
+  clickSound.play();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById("page"+n).classList.add("active");
 }
+
+/* HEART FALL */
+setInterval(() => {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerText = "💗";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 5000);
+}, 400);
 
 /* MEMORY GAME */
 const symbols = ["❤️","❤️","🌸","🌸","💌","💌","🍓","🍓","🌷","🌷","🎀","🎀"];
@@ -169,26 +220,33 @@ let shuffled = symbols.sort(() => 0.5 - Math.random());
 let firstCard = null;
 let lock = false;
 let matches = 0;
-
 const board = document.getElementById("gameBoard");
 
 shuffled.forEach(sym => {
   const card = document.createElement("div");
-  card.className = "card hidden";
-  card.textContent = sym;
+  card.className = "card";
+  card.innerHTML = `
+    <div class="card-inner">
+      <div class="front">?</div>
+      <div class="back">${sym}</div>
+    </div>`;
   card.onclick = () => flip(card);
   board.appendChild(card);
 });
 
 function flip(card) {
-  if (lock || !card.classList.contains("hidden")) return;
-  card.classList.remove("hidden");
+  if (lock || card.classList.contains("flipped")) return;
+  clickSound.play();
+  card.classList.add("flipped");
 
   if (!firstCard) {
     firstCard = card;
   } else {
     lock = true;
-    if (card.textContent === firstCard.textContent) {
+    let sym1 = firstCard.querySelector(".back").innerText;
+    let sym2 = card.querySelector(".back").innerText;
+
+    if (sym1 === sym2) {
       matches++;
       firstCard = null;
       lock = false;
@@ -198,11 +256,11 @@ function flip(card) {
       }
     } else {
       setTimeout(() => {
-        card.classList.add("hidden");
-        firstCard.classList.add("hidden");
+        card.classList.remove("flipped");
+        firstCard.classList.remove("flipped");
         firstCard = null;
         lock = false;
-      }, 800);
+      }, 900);
     }
   }
 }
@@ -211,6 +269,7 @@ function flip(card) {
 let clicked = [false,false,false];
 
 function reveal(n) {
+  clickSound.play();
   if (n === 1) {
     document.getElementById("r1").innerText = "you always make me laugh";
     clicked[0] = true;
