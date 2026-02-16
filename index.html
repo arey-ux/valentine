@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine Game</title>
+<style>
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  background-color: #BCD9A2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.page {
+  display: none;
+  text-align: center;
+}
+
+.active {
+  display: block;
+}
+
+.box {
+  background-color: #FFD8DF;
+  padding: 30px;
+  border-radius: 20px;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  border-radius: 20px;
+  border: none;
+  background-color: white;
+  color: #FFAAB8;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 70px);
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.card {
+  width: 70px;
+  height: 70px;
+  background-color: #FFD8DF;
+  border-radius: 12px;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.hidden {
+  color: transparent;
+}
+
+.heart-buttons button {
+  display: block;
+  margin: 10px auto;
+}
+
+img {
+  width: 120px;
+  border-radius: 15px;
+  margin: 10px;
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div id="page1" class="page active">
+  <div class="box">
+    <p>hi, kavian!</p>
+    <p>i made this for you!</p>
+    <p>play this game to unlock your surprise!</p>
+    <button onclick="goToPage(2)">start game</button>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page">
+  <p>tap two cards to find the matching pairs!</p>
+  <div class="grid" id="gameBoard"></div>
+  <p id="winText" style="display:none;">yeay you found all the pairs!</p>
+  <button id="nextBtn2" style="display:none;" onclick="goToPage(3)">next page</button>
+</div>
+
+<!-- PAGE 3 -->
+<div id="page3" class="page">
+  <h2>Reasons Why I Love You</h2>
+  <p>Tap each heart to reveal one reason</p>
+  <div class="heart-buttons">
+    <button onclick="reveal(1)">your humor</button>
+    <p id="r1"></p>
+    <button onclick="reveal(2)">your heart</button>
+    <p id="r2"></p>
+    <button onclick="reveal(3)">your looks</button>
+    <p id="r3"></p>
+  </div>
+  <button id="nextBtn3" style="display:none;" onclick="goToPage(4)">NEXT PAGE</button>
+</div>
+
+<!-- PAGE 4 -->
+<div id="page4" class="page">
+  <div class="box">
+    <h2>Happy Valentine's Day, Kavian!</h2>
+    <img src="foto1.jpg" alt="photo1">
+    <img src="foto2.jpg" alt="photo2">
+  </div>
+</div>
+
+<script>
+function goToPage(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById("page"+n).classList.add("active");
+}
+
+/* MEMORY GAME */
+const symbols = ["❤️","❤️","🌸","🌸","💌","💌","🍓","🍓","🌷","🌷","🎀","🎀"];
+let shuffled = symbols.sort(() => 0.5 - Math.random());
+let firstCard = null;
+let lock = false;
+let matches = 0;
+
+const board = document.getElementById("gameBoard");
+
+shuffled.forEach(sym => {
+  const card = document.createElement("div");
+  card.className = "card hidden";
+  card.textContent = sym;
+  card.onclick = () => flip(card);
+  board.appendChild(card);
+});
+
+function flip(card) {
+  if (lock || !card.classList.contains("hidden")) return;
+  card.classList.remove("hidden");
+
+  if (!firstCard) {
+    firstCard = card;
+  } else {
+    lock = true;
+    if (card.textContent === firstCard.textContent) {
+      matches++;
+      firstCard = null;
+      lock = false;
+      if (matches === 6) {
+        document.getElementById("winText").style.display = "block";
+        document.getElementById("nextBtn2").style.display = "inline-block";
+      }
+    } else {
+      setTimeout(() => {
+        card.classList.add("hidden");
+        firstCard.classList.add("hidden");
+        firstCard = null;
+        lock = false;
+      }, 800);
+    }
+  }
+}
+
+/* PAGE 3 LOGIC */
+let clicked = [false,false,false];
+
+function reveal(n) {
+  if (n === 1) {
+    document.getElementById("r1").innerText = "you always make me laugh";
+    clicked[0] = true;
+  }
+  if (n === 2) {
+    document.getElementById("r2").innerText = "the way you love to all your friends, especially me";
+    clicked[1] = true;
+  }
+  if (n === 3) {
+    document.getElementById("r3").innerText = "ganteng dan sexy";
+    clicked[2] = true;
+  }
+  if (clicked.every(v => v)) {
+    document.getElementById("nextBtn3").style.display = "inline-block";
+  }
+}
+</script>
+
+</body>
+</html>
