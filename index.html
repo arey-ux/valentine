@@ -114,9 +114,9 @@ img {
 <!-- PAGE 1 -->
 <div id="page1" class="page active">
   <div class="box">
-    <p>Hi, Kavian!</p>
-    <p>aku bikin ini spesyol buat kamu!</p>
-    <p>main dulu yuk</p>
+    <p>hi, kavian!</p>
+    <p>i made this for you!</p>
+    <p>play this game to unlock your surprise!</p>
     <button onclick="goToPage(2)">start game</button>
   </div>
 </div>
@@ -124,9 +124,9 @@ img {
 <!-- PAGE 2 -->
 <div id="page2" class="page">
   <div class="box">
-    <p>Tap two cards to find the matching pairs!</p>
+    <p>tap two cards to find the matching pairs!</p>
     <div class="grid" id="gameBoard"></div>
-    <p id="winText" style="display:none;">Yeay you found all the pairs!</p>
+    <p id="winText" style="display:none;">yeay you found all the pairs!</p>
     <button id="nextBtn2" style="display:none;" onclick="goToPage(3)">next page</button>
   </div>
 </div>
@@ -134,14 +134,14 @@ img {
 <!-- PAGE 3 -->
 <div id="page3" class="page">
   <div class="box">
-    <h2>Reasons The Why I Love You</h2>
+    <h2>Reasons Why I Love You</h2>
     <p>Tap each heart to reveal one reason</p>
     <div class="heart-buttons">
-      <button onclick="reveal(1)">Your humor</button>
+      <button onclick="reveal(1)">your humor</button>
       <p id="r1" class="reason"></p>
-      <button onclick="reveal(2)">Your heart</button>
+      <button onclick="reveal(2)">your heart</button>
       <p id="r2" class="reason"></p>
-      <button onclick="reveal(3)">Your looks</button>
+      <button onclick="reveal(3)">your looks</button>
       <p id="r3" class="reason"></p>
     </div>
     <button id="nextBtn3" style="display:none;" onclick="goToPage(4)">NEXT PAGE</button>
@@ -212,15 +212,15 @@ let clicked = [false,false,false];
 
 function reveal(n) {
   if (n === 1) {
-    document.getElementById("r1").innerText = "Selalu excited dan bikin ketawa";
+    document.getElementById("r1").innerText = "you always make me laugh";
     clicked[0] = true;
   }
   if (n === 2) {
-    document.getElementById("r2").innerText = "Kamu pembaik dan pecinta semua orang";
+    document.getElementById("r2").innerText = "the way you love to all your friends, especially me";
     clicked[1] = true;
   }
   if (n === 3) {
-    document.getElementById("r3").innerText = "Ganteng dan Sexy";
+    document.getElementById("r3").innerText = "ganteng dan sexy";
     clicked[2] = true;
   }
   if (clicked.every(v => v)) {
